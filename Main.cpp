@@ -107,14 +107,20 @@ void updateViewportRatios() {
 }
 
 int main() {
+    // Initialize GLFW and set context to modern OpenGL 4.6
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // Create GLFW window and set input mode
     GLFWwindow* window = glfwCreateWindow(window_width, window_height, "OpenUI", NULL, NULL);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwMakeContextCurrent(window);
+
+    // Enable multiple viewports
     glEnable(GL_SCISSOR_TEST);
 
+    // 
     flag_moving.resize(topViewportRatios.size() - 1, false);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
