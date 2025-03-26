@@ -13,6 +13,7 @@ GLFWcursor* vresizeCursor = nullptr;
 
 bool flag_holding = false;
 std::vector<bool> flag_moving;
+bool flag_moving_vertical = false;
 
 typedef struct {
     float R, G, B, A;
@@ -29,7 +30,7 @@ struct Viewport {
     }
 };
 
-std::vector<float> topViewportRatios = { 0.25f, 0.25f, 0.25f, 0.25f }; // Three viewports
+std::vector<float> topViewportRatios = { 0.33f, 0.33f, 0.34f }; // Three viewports
 float bottomHeightRatio = 0.5f;
 
 double last_drag_pos[2] = { 0.0, 0.0 };
@@ -52,8 +53,6 @@ void draw(GLFWwindow* window) {
     glViewport(0, 0, window_width, window_height * bottomHeightRatio);
     glClearColor(0.f, 1.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    glfwSwapBuffers(window);
 }
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -75,9 +74,16 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
                     flag_holding = true;
                 }
             }
+
+            int yBoundary = window_height * bottomHeightRatio;
+            if (std::abs((window_height - cursor_ypos) - yBoundary) <= 7.5) {
+                flag_moving_vertical = true;
+                flag_holding = true;
+            }
         }
         else if (action == GLFW_RELEASE) {
             std::fill(flag_moving.begin(), flag_moving.end(), false);
+            flag_moving_vertical = false;
             flag_holding = false;
         }
     }
@@ -104,13 +110,21 @@ void updateViewportRatios() {
             last_drag_pos[0] = cursor_xpos;
         }
     }
+
+    if (flag_moving_vertical) {
+        double delta_y = cursor_ypos - last_drag_pos[1];
+        float ratio_change = delta_y / window_height;
+        float new_ratio = bottomHeightRatio - ratio_change;
+
+        if (new_ratio >= 0.1f && new_ratio <= 0.9f) {
+            bottomHeightRatio = new_ratio;
+        }
+        last_drag_pos[1] = cursor_ypos;
+    }
 }
 
 int main() {
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     GLFWwindow* window = glfwCreateWindow(window_width, window_height, "OpenUI", NULL, NULL);
     glfwMakeContextCurrent(window);
     glEnable(GL_SCISSOR_TEST);
@@ -123,7 +137,7 @@ int main() {
         processInput(window);
         updateViewportRatios();
         draw(window);
-
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
