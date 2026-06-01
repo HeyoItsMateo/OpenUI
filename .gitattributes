@@ -4,6 +4,20 @@
 * text=auto
 
 ###############################################################################
+# OpenUI uses Windows CRLF line endings for source and Visual Studio project files.
+###############################################################################
+*.c       text eol=crlf
+*.cc      text eol=crlf
+*.cpp     text eol=crlf
+*.cxx     text eol=crlf
+*.h       text eol=crlf
+*.hpp     text eol=crlf
+*.hxx     text eol=crlf
+*.sln     text eol=crlf
+*.vcxproj text eol=crlf
+*.filters text eol=crlf
+
+###############################################################################
 # Set default behavior for command prompt diff.
 #
 # This is need for earlier builds of msysgit that does not have it on by
