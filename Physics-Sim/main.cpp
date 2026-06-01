@@ -59,7 +59,7 @@ void draw(GLFWwindow* window) {
         if (i != 2) {
             vpV[i].draw(0, yStart, window_width, height);
         }
-        
+
         /*
         glScissor(0, yStart, window_width, window_height * bottomHeightRatio);
         glViewport(0, yStart, window_width, window_height * bottomHeightRatio);
@@ -83,7 +83,7 @@ void draw(GLFWwindow* window) {
 
         yStart += height;
     }
-    
+
 }
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -169,7 +169,7 @@ void updateViewportRatios() {
     }
 
 
-    
+
 }
 
 int main() {
